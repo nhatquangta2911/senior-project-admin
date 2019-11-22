@@ -1,8 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Abel&display=swap");
 * {
   font-family: "Abel", sans-serif;
+  font-size: 14px;
 }
 
 body {
-  background-color: #fbfbfb;
+  background-color: #f7f7f7;
+}
+
+.App {
+  padding: 1rem 5rem;
+  background-color: #fff;
 }

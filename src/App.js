@@ -1,18 +1,19 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom";
 import "./styles/styles.scss";
+import "semantic-ui-css/semantic.min.css";
+import { Navbar } from "./components";
+import { LogPage, HomePage, MonitorPage } from "./pages";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Pro Tip: Using the resolveData prop - Any time the data prop value
-          changes (using a === comparison), the table will update, but sometimes
-          you need to materialize, alter, or shape this data before it enters
-          the table. To do this, you can use the resolveData prop! It receives
-          the data prop as the only parameter and returns the resolved data.
-        </p>
-      </header>
+      <Navbar />
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route path="/log" component={LogPage} />
+        <Route path="/monitor" component={MonitorPage} />
+      </Switch>
     </div>
   );
 }

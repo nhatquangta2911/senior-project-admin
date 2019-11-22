@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
-export default class HomePage extends Component {
+export default class MonitorPage extends Component {
   render() {
     return (
       <div>
-        <p>Home Page</p>
+        <p>Monitor Page</p>
       </div>
     );
   }
