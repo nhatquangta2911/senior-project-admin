@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { Menu } from "semantic-ui-react";
-import { Link, withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import { Menu } from 'semantic-ui-react';
+import { Link, withRouter } from 'react-router-dom';
 
 class Navbar extends Component {
   constructor(props) {
@@ -8,9 +8,9 @@ class Navbar extends Component {
     this.state = {
       isLoading: false,
       results: [],
-      value: "",
-      activeItem: "",
-      token: ""
+      value: '',
+      activeItem: '',
+      token: ''
     };
   }
 
@@ -19,9 +19,9 @@ class Navbar extends Component {
   handleLogout = () => {
     window.sessionStorage.clear();
     this.setState({
-      activeItem: "auth"
+      activeItem: 'auth'
     });
-    this.props.history.push("/auth");
+    this.props.history.push('/auth');
   };
 
   render() {
@@ -32,30 +32,30 @@ class Navbar extends Component {
           as={Link}
           to="/"
           name="home"
-          active={activeItem === "home"}
+          active={activeItem === 'home'}
           onClick={this.handleItemClick}
         />
         <Menu.Item
           as={Link}
           to="/log"
           name="activity log"
-          active={activeItem === "activity log"}
+          active={activeItem === 'activity log'}
           onClick={this.handleItemClick}
         />
         <Menu.Item
           as={Link}
           to="/monitor"
           name="monitor model"
-          active={activeItem === "monitor model"}
+          active={activeItem === 'monitor model'}
           onClick={this.handleItemClick}
         />
         <Menu.Menu position="right">
-          {!window.sessionStorage.getItem("token") ? (
+          {!window.sessionStorage.getItem('token') ? (
             <Menu.Item
               as={Link}
               to="/auth"
               name="login"
-              active={activeItem === "login"}
+              active={activeItem === 'login'}
               onClick={() => this.handleItemClick}
             />
           ) : (
