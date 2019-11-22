@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Menu, Search, Segment } from "semantic-ui-react";
+import { Menu } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 
 class Navbar extends Component {
@@ -9,16 +9,25 @@ class Navbar extends Component {
       isLoading: false,
       results: [],
       value: "",
-      activeItem: "home"
+      activeItem: "",
+      token: ""
     };
   }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
+  handleLogout = () => {
+    window.sessionStorage.clear();
+    this.setState({
+      activeItem: "auth"
+    });
+    this.props.history.push("/auth");
+  };
+
   render() {
-    const { isLoading, activeItem, results, value } = this.state;
+    const { activeItem } = this.state;
     return (
-      <Menu color="teal" borderless stackable inverted size="medium">
+      <Menu color="teal" borderless stackable inverted size="small">
         <Menu.Item
           as={Link}
           to="/"
@@ -41,11 +50,22 @@ class Navbar extends Component {
           onClick={this.handleItemClick}
         />
         <Menu.Menu position="right">
-          <Menu.Item
-            name="logout"
-            active={activeItem === "logout"}
-            onClick={this.handleItemClick}
-          />
+          {!window.sessionStorage.getItem("token") ? (
+            <Menu.Item
+              as={Link}
+              to="/auth"
+              name="login"
+              active={activeItem === "login"}
+              onClick={() => this.handleItemClick}
+            />
+          ) : (
+            <Menu.Item
+              as={Link}
+              to="/auth"
+              name="logout"
+              onClick={() => this.handleLogout()}
+            />
+          )}
         </Menu.Menu>
       </Menu>
     );
