@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { TableHeader } from '../../../components';
+import React, { Component } from "react";
+import { TableHeader } from "../../../components";
 import {
   Table,
   Button,
@@ -8,10 +8,10 @@ import {
   Loader,
   Pagination,
   Modal
-} from 'semantic-ui-react';
-import { useToasts } from 'react-toast-notifications';
+} from "semantic-ui-react";
+import { withHooksHOC } from "../../../helpers/withHooksHOC";
 
-export default class TransactionTable extends Component {
+class TransactionTable extends Component {
   state = {
     open: false,
     isloading: false,
@@ -19,33 +19,33 @@ export default class TransactionTable extends Component {
     data: [
       {
         order: 1,
-        inputLayer: 'Layer 1',
-        outputLayer: 'Layer 5',
-        activationFunction: 'ReLU'
+        inputLayer: "Layer 1",
+        outputLayer: "Layer 5",
+        activationFunction: "ReLU"
       },
       {
         order: 2,
-        inputLayer: 'Layer 4',
-        outputLayer: 'Layer 13',
-        activationFunction: 'Sigmoid'
+        inputLayer: "Layer 4",
+        outputLayer: "Layer 13",
+        activationFunction: "Sigmoid"
       },
       {
         order: 3,
-        inputLayer: 'Layer 2',
-        outputLayer: 'Layer 3',
-        activationFunction: 'Tanh'
+        inputLayer: "Layer 2",
+        outputLayer: "Layer 3",
+        activationFunction: "Tanh"
       },
       {
         order: 4,
-        inputLayer: 'Layer 8',
-        outputLayer: 'Layer 4',
-        activationFunction: 'Maxout'
+        inputLayer: "Layer 8",
+        outputLayer: "Layer 4",
+        activationFunction: "Maxout"
       },
       {
         order: 5,
-        inputLayer: 'Layer 2',
-        outputLayer: 'Layer 9',
-        activationFunction: 'Sigmoid'
+        inputLayer: "Layer 2",
+        outputLayer: "Layer 9",
+        activationFunction: "Sigmoid"
       }
     ]
   };
@@ -138,12 +138,9 @@ export default class TransactionTable extends Component {
               content="Yes"
               labelPosition="right"
               icon="checkmark"
-              onClick={useToasts => {
+              onClick={() => {
                 this.close();
-                useToasts().addToast('Demo', {
-                  appearance: 'info',
-                  autoDismiss: true
-                });
+                this.props.toast.addToast("Deleted", { appearance: "success" });
               }}
             />
           </Modal.Actions>
@@ -182,3 +179,5 @@ export default class TransactionTable extends Component {
     );
   }
 }
+
+export default withHooksHOC(TransactionTable);
