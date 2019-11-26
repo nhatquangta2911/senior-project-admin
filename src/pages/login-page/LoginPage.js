@@ -8,8 +8,11 @@ import {
   Message,
   Segment
 } from "semantic-ui-react";
+import AuthApi from "../../api/AuthApi";
+import { withHooksHOC } from "../../helpers/withHooksHOC";
+import { Link, withRouter } from "react-router-dom";
 
-export default class LoginPage extends Component {
+class LoginPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,17 +21,43 @@ export default class LoginPage extends Component {
     };
   }
 
-  handleSubmit = () => {
-    const { email, password } = this.state;
-    if (email === "shawn" && password === "shawn") {
-      window.sessionStorage.setItem("token", "shawnshawn");
-      this.props.history.push("/log");
-    } else {
-      this.setState({
-        password: ""
+  handleSubmit = async () => {
+    try {
+      if (!this.state.email || !this.state.password) {
+        this.props.toast.addToast(
+          "You must enter both username and password. Please try again.",
+          { appearance: "error" }
+        );
+        return;
+      }
+      const result = await AuthApi.login({
+        email: this.state.email,
+        password: this.state.password
       });
+      this.props.toast.addToast(`Welcome ${result.data.user.name}`, {
+        appearance: "success"
+      });
+      window.sessionStorage.setItem("token", result.data.token);
+      this.props.history.push("/monitor");
+    } catch (error) {
+      this.props.toast.addToast(
+        `Invalid username or password. Please try again.`,
+        {
+          appearance: "error"
+        }
+      );
       this.props.history.push("/auth");
     }
+    // const { email, password } = this.state;
+    // if (email === "shawn" && password === "shawn") {
+    //   window.sessionStorage.setItem("token", "shawnshawn");
+    //   this.props.history.push("/log");
+    // } else {
+    //   this.setState({
+    //     password: ""
+    //   });
+    //   this.props.history.push("/auth");
+    // }
   };
 
   render() {
@@ -66,7 +95,10 @@ export default class LoginPage extends Component {
                 color="teal"
                 fluid
                 size="large"
-                onClick={() => this.handleSubmit()}
+                onClick={e => {
+                  e.preventDefault();
+                  this.handleSubmit();
+                }}
               >
                 Login
               </Button>
@@ -78,3 +110,5 @@ export default class LoginPage extends Component {
     );
   }
 }
+
+export default withHooksHOC(withRouter(LoginPage));

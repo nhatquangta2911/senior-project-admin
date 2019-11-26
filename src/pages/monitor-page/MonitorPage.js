@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Tab } from 'semantic-ui-react';
-import TransactionTable from './transaction-table';
+import React, { Component } from "react";
+import { Tab, Responsive } from "semantic-ui-react";
+import TransactionTable from "./transaction-table";
 
 export default class MonitorPage extends Component {
   constructor(props) {
@@ -8,11 +8,11 @@ export default class MonitorPage extends Component {
     this.state = {
       panes: [
         {
-          menuItem: 'Dashboard',
+          menuItem: "Dashboard",
           render: () => <Tab.Pane loading>Dashboard</Tab.Pane>
         },
         {
-          menuItem: 'Transactions',
+          menuItem: "Transactions",
           render: () => (
             <Tab.Pane>
               <TransactionTable />
@@ -20,11 +20,11 @@ export default class MonitorPage extends Component {
           )
         },
         {
-          menuItem: 'Layers',
+          menuItem: "Layers",
           render: () => <Tab.Pane loading>Layers</Tab.Pane>
         },
         {
-          menuItem: 'Activation Functions',
+          menuItem: "Activation Functions",
           render: () => <Tab.Pane loading>Activation Functions</Tab.Pane>
         }
       ]
@@ -36,7 +36,7 @@ export default class MonitorPage extends Component {
       <Tab
         menu={{
           fluid: true,
-          color: 'teal',
+          color: "teal",
           vertical: true,
           pointing: true
         }}

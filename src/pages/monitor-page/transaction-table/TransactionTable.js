@@ -120,6 +120,7 @@ class TransactionTable extends Component {
         </Table.Cell>
       </Table.Row>
     ));
+    //TODO: Modal Confirm
     return (
       <div>
         <Modal size="tiny" open={open} onClose={() => this.close()}>
