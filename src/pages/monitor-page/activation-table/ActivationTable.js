@@ -11,7 +11,7 @@ import {
 } from "semantic-ui-react";
 import { withHooksHOC } from "../../../helpers/withHooksHOC";
 
-class TransactionTable extends Component {
+class ActivationTable extends Component {
   state = {
     open: false,
     isloading: false,
@@ -68,14 +68,14 @@ class TransactionTable extends Component {
   };
 
   handleEdit = () => {
-    // this.setState({
-    //   isLoading: true
-    // });
-    // setTimeout(() => {
-    //   this.setState({
-    //     isLoading: false
-    //   });
-    // }, 500);
+    this.setState({
+      isLoading: true
+    });
+    setTimeout(() => {
+      this.setState({
+        isLoading: false
+      });
+    }, 500);
   };
 
   handleEmergeModal = () => {
@@ -147,9 +147,9 @@ class TransactionTable extends Component {
           </Modal.Actions>
         </Modal>
         <TableHeader
-          content="Transactions"
-          subheader="Monitor all the transactions"
-          total="27"
+          content="Activation Functions"
+          subheader="Monitor all the activation functions"
+          total="15"
         />
         <Table singleLine compact striped>
           <Table.Header>
@@ -181,4 +181,4 @@ class TransactionTable extends Component {
   }
 }
 
-export default withHooksHOC(TransactionTable);
+export default withHooksHOC(ActivationTable);

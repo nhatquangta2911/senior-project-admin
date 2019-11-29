@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Tab, Responsive } from "semantic-ui-react";
+import { Tab } from "semantic-ui-react";
 import TransactionTable from "./transaction-table";
+import LayerTable from "./layer-table";
+import ActivationTable from "./activation-table";
 
 export default class MonitorPage extends Component {
   constructor(props) {
@@ -21,11 +23,19 @@ export default class MonitorPage extends Component {
         },
         {
           menuItem: "Layers",
-          render: () => <Tab.Pane loading>Layers</Tab.Pane>
+          render: () => (
+            <Tab.Pane>
+              <LayerTable />
+            </Tab.Pane>
+          )
         },
         {
           menuItem: "Activation Functions",
-          render: () => <Tab.Pane loading>Activation Functions</Tab.Pane>
+          render: () => (
+            <Tab.Pane>
+              <ActivationTable />
+            </Tab.Pane>
+          )
         }
       ]
     };

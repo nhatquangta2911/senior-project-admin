@@ -1,16 +1,8 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Form,
-  Grid,
-  Icon,
-  Header,
-  Message,
-  Segment
-} from "semantic-ui-react";
+import { Button, Form, Grid, Icon, Header, Segment } from "semantic-ui-react";
 import AuthApi from "../../api/AuthApi";
 import { withHooksHOC } from "../../helpers/withHooksHOC";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 class LoginPage extends Component {
   constructor(props) {
@@ -48,16 +40,6 @@ class LoginPage extends Component {
       );
       this.props.history.push("/auth");
     }
-    // const { email, password } = this.state;
-    // if (email === "shawn" && password === "shawn") {
-    //   window.sessionStorage.setItem("token", "shawnshawn");
-    //   this.props.history.push("/log");
-    // } else {
-    //   this.setState({
-    //     password: ""
-    //   });
-    //   this.props.history.push("/auth");
-    // }
   };
 
   render() {
@@ -104,7 +86,6 @@ class LoginPage extends Component {
               </Button>
             </Segment>
           </Form>
-          <Message>1</Message>
         </Grid.Column>
       </Grid>
     );
