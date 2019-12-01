@@ -33,7 +33,8 @@ class TransactionTable extends Component {
       value: {},
       result: {},
       defaultValue: {},
-      isLoading: true
+      isLoading: true,
+      id: ''
     };
   }
 
@@ -86,24 +87,11 @@ class TransactionTable extends Component {
         isEdit: false,
         isLoading: true
       });
-      await TransactionApi.add(this.state.result);
-      const data = await TransactionApi.getAll();
       this.props.toast.addToast('Success', {
-        appearance: 'success',
-        isEdit: false
+        appearance: 'success'
       });
-      this.setState({
-        data: data.data.transactions.map(t => {
-          let object = {};
-          object['id'] = t._id;
-          object['order'] = data.data.transactions.indexOf(t) + 1;
-          object['inputLayer'] = t.inputLayer;
-          object['outputLayer'] = t.outputLayer;
-          object['activationFunction'] = t.activationFunction;
-          return object;
-        }),
-        isLoading: false
-      });
+      await TransactionApi.update(this.state.id, this.state.result);
+      window.location.reload();
     } catch (error) {
       this.props.toast.addToast('Something went wrong. Please try again.', {
         appearance: 'error'
@@ -117,11 +105,18 @@ class TransactionTable extends Component {
     this.props.toast.addToast(`PAGE ${activePage}`, { appearance: 'info' });
   };
 
+  handleDelete = async cell => {
+    this.setState({
+      id: cell.id
+    });
+  };
+
   handleEdit = async cell => {
     const defaultValue = this.state.data.filter(d => d.id === cell.id)[0];
     this.setState({
       isEdit: true,
-      defaultValue
+      defaultValue,
+      id: cell.id
     });
     if (this.state.inputLayers.length === 0) {
       const inputLayers = await LayerApi.getAll();
@@ -170,7 +165,8 @@ class TransactionTable extends Component {
       outputLayers,
       activationFunctions,
       value,
-      isLoading
+      isLoading,
+      id
     } = this.state;
 
     console.log({ defaultValue });
@@ -195,7 +191,14 @@ class TransactionTable extends Component {
               <Button.Content hidden>Edit</Button.Content>
             </Button>
             <Button.Or text="or" />
-            <Button animated="fade" color="red" onClick={() => this.show()}>
+            <Button
+              animated="fade"
+              color="red"
+              onClick={() => {
+                this.show();
+                this.handleDelete(cell);
+              }}
+            >
               <Button.Content visible>
                 <Icon name="delete" />
               </Button.Content>
@@ -227,11 +230,13 @@ class TransactionTable extends Component {
                 content="Yes"
                 labelPosition="right"
                 icon="checkmark"
-                onClick={() => {
+                onClick={async () => {
                   this.close();
+                  window.location.reload();
                   this.props.toast.addToast('Deleted', {
                     appearance: 'success'
                   });
+                  await TransactionApi.delete(id);
                 }}
               />
             </Modal.Actions>
@@ -278,7 +283,6 @@ class TransactionTable extends Component {
             <Form style={{ textAlign: 'left' }}>
               <Form.Group widths="equal">
                 <Dropdown
-                  defaultValue={{}}
                   id="inputLayer"
                   options={inputLayers}
                   value={value.inputLayer}
@@ -290,7 +294,6 @@ class TransactionTable extends Component {
                   onChange={this.handleChange}
                 />
                 <Dropdown
-                  defaultValue={{}}
                   id="outputLayer"
                   options={outputLayers}
                   value={value.outputLayer}
@@ -302,7 +305,6 @@ class TransactionTable extends Component {
                   onChange={this.handleChange}
                 />
                 <Dropdown
-                  defaultValue={{}}
                   id="activationFunction"
                   options={activationFunctions}
                   value={value.activationFunction}
