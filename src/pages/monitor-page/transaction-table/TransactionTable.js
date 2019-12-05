@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { TableHeader } from '../../../components';
+import React, { Component } from "react";
+import { TableHeader } from "../../../components";
 import {
   Table,
   Button,
@@ -12,12 +12,12 @@ import {
   Header,
   Segment,
   Loader
-} from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
-import { withHooksHOC } from '../../../helpers/withHooksHOC';
-import LayerApi from '../../../api/LayerApi';
-import ActivationFunctionApi from '../../../api/ActivationFunctionApi';
-import TransactionApi from '../../../api/TransactionApi';
+} from "semantic-ui-react";
+import { withRouter } from "react-router-dom";
+import { withHooksHOC } from "../../../helpers/withHooksHOC";
+import LayerApi from "../../../api/LayerApi";
+import ActivationFunctionApi from "../../../api/ActivationFunctionApi";
+import TransactionApi from "../../../api/TransactionApi";
 
 class TransactionTable extends Component {
   constructor(props) {
@@ -32,9 +32,8 @@ class TransactionTable extends Component {
       outputLayers: [],
       value: {},
       result: {},
-      defaultValue: {},
       isLoading: true,
-      id: ''
+      id: ""
     };
   }
 
@@ -44,19 +43,22 @@ class TransactionTable extends Component {
       this.setState({
         data: data.data.transactions.map(t => {
           let object = {};
-          object['id'] = t._id;
-          object['order'] = data.data.transactions.indexOf(t) + 1;
-          object['inputLayer'] = t.inputLayer;
-          object['outputLayer'] = t.outputLayer;
-          object['activationFunction'] = t.activationFunction;
+          object["id"] = t._id;
+          object["order"] = data.data.transactions.indexOf(t) + 1;
+          object["inputLayer"] = t.inputLayer;
+          object["outputLayer"] = t.outputLayer;
+          object["activationFunction"] = t.activationFunction;
           return object;
         }),
         isLoading: false
       });
+      setTimeout(() => {
+        this.handleEdit();
+      }, 2000);
     } catch (error) {
       console.log(error);
-      this.props.toast.addToast('Something went wrong', {
-        appearance: 'error'
+      this.props.toast.addToast("Something went wrong", {
+        appearance: "error"
       });
     }
   }
@@ -65,7 +67,7 @@ class TransactionTable extends Component {
   handleChange = (e, data) => {
     let result = this.state.result;
     let value = this.state.value;
-    result[data.id + 'Id'] = data.value;
+    result[data.id + "Id"] = data.value;
     value[data.id] = data.searchQuery;
     this.setState({
       result,
@@ -87,14 +89,14 @@ class TransactionTable extends Component {
         isEdit: false,
         isLoading: true
       });
-      this.props.toast.addToast('Success', {
-        appearance: 'success'
+      this.props.toast.addToast("Success", {
+        appearance: "success"
       });
       await TransactionApi.update(this.state.id, this.state.result);
       window.location.reload();
     } catch (error) {
-      this.props.toast.addToast('Something went wrong. Please try again.', {
-        appearance: 'error'
+      this.props.toast.addToast("Something went wrong. Please try again.", {
+        appearance: "error"
       });
     }
   };
@@ -102,7 +104,7 @@ class TransactionTable extends Component {
   handleClose = () => this.setState({ isEdit: false, value: {} });
 
   handlePageChange = (event, { activePage }) => {
-    this.props.toast.addToast(`PAGE ${activePage}`, { appearance: 'info' });
+    this.props.toast.addToast(`PAGE ${activePage}`, { appearance: "info" });
   };
 
   handleDelete = async cell => {
@@ -111,39 +113,32 @@ class TransactionTable extends Component {
     });
   };
 
-  handleEdit = async cell => {
-    const defaultValue = this.state.data.filter(d => d.id === cell.id)[0];
-    this.setState({
-      isEdit: true,
-      defaultValue,
-      id: cell.id
-    });
+  handleEdit = async () => {
     if (this.state.inputLayers.length === 0) {
       const inputLayers = await LayerApi.getAll();
       const outputLayers = await LayerApi.getAll();
       const activationFunctions = await ActivationFunctionApi.getAll();
       this.setState({
-        isLoading: false,
         inputLayers: inputLayers.data.layers.map(l => {
           let object = {};
-          object['id'] = l._id;
-          object['value'] = l._id;
-          object['text'] = l.name;
+          object["id"] = l._id;
+          object["value"] = l._id;
+          object["text"] = l.name;
           return object;
         }),
         outputLayers: outputLayers.data.layers.map(l => {
           let object = {};
-          object['id'] = l._id;
-          object['value'] = l._id;
-          object['text'] = l.name;
+          object["id"] = l._id;
+          object["value"] = l._id;
+          object["text"] = l.name;
           return object;
         }),
         activationFunctions: activationFunctions.data.activationFunctions.map(
           a => {
             let object = {};
-            object['id'] = a._id;
-            object['value'] = a._id;
-            object['text'] = a.name;
+            object["id"] = a._id;
+            object["value"] = a._id;
+            object["text"] = a.name;
             return object;
           }
         )
@@ -160,7 +155,6 @@ class TransactionTable extends Component {
       isEdit,
       activePage,
       data,
-      defaultValue,
       inputLayers,
       outputLayers,
       activationFunctions,
@@ -168,8 +162,6 @@ class TransactionTable extends Component {
       isLoading,
       id
     } = this.state;
-
-    console.log({ defaultValue });
     const tableData = data.map(cell => (
       <Table.Row key={cell.order}>
         <Table.Cell textAlign="center">{cell.order}</Table.Cell>
@@ -183,7 +175,12 @@ class TransactionTable extends Component {
             <Button
               animated="fade"
               color="green"
-              onClick={() => this.handleEdit(cell)}
+              onClick={() =>
+                this.setState({
+                  isEdit: true,
+                  id: cell && cell.id
+                })
+              }
             >
               <Button.Content visible>
                 <Icon name="edit" />
@@ -231,12 +228,12 @@ class TransactionTable extends Component {
                 labelPosition="right"
                 icon="checkmark"
                 onClick={async () => {
-                  this.close();
-                  window.location.reload();
-                  this.props.toast.addToast('Deleted', {
-                    appearance: 'success'
+                  this.props.toast.addToast("Deleted", {
+                    appearance: "success"
                   });
+                  this.close();
                   await TransactionApi.delete(id);
+                  window.location.reload();
                 }}
               />
             </Modal.Actions>
@@ -273,14 +270,14 @@ class TransactionTable extends Component {
           >
             <Header as="h2" color="teal">
               <Icon name="settings" color="teal" />
-              <Header.Content style={{ textAlign: 'left' }}>
+              <Header.Content style={{ textAlign: "left" }}>
                 Edit transaction
                 <Header.Subheader>
                   Change the input/output layer and activation function
                 </Header.Subheader>
               </Header.Content>
             </Header>
-            <Form style={{ textAlign: 'left' }}>
+            <Form style={{ textAlign: "left" }}>
               <Form.Group widths="equal">
                 <Dropdown
                   id="inputLayer"
@@ -318,7 +315,7 @@ class TransactionTable extends Component {
               </Form.Group>
               <Form.TextArea
                 label="Note"
-                style={{ minHeight: 100, maxHeight: 200, textAlign: 'left' }}
+                style={{ minHeight: 100, maxHeight: 200, textAlign: "left" }}
                 placeholder="Leave the reason for changing..."
               />
               <Form.Group style={{ marginTop: 10 }}>
