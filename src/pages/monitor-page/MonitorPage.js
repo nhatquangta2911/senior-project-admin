@@ -3,6 +3,7 @@ import { Tab } from "semantic-ui-react";
 import TransactionTable from "./transaction-table";
 import LayerTable from "./layer-table";
 import ActivationTable from "./activation-table";
+import TrainTable from "./train-table/TrainTable";
 
 export default class MonitorPage extends Component {
   constructor(props) {
@@ -11,7 +12,19 @@ export default class MonitorPage extends Component {
       panes: [
         {
           menuItem: "Dashboard",
-          render: () => <Tab.Pane loading>Dashboard</Tab.Pane>
+          render: () => (
+            <Tab.Pane>
+              <TrainTable />
+            </Tab.Pane>
+          )
+        },
+        {
+          menuItem: "Training",
+          render: () => (
+            <Tab.Pane>
+              <TrainTable />
+            </Tab.Pane>
+          )
         },
         {
           menuItem: "Transactions",
@@ -21,14 +34,7 @@ export default class MonitorPage extends Component {
             </Tab.Pane>
           )
         },
-        {
-          menuItem: "Layers",
-          render: () => (
-            <Tab.Pane>
-              <LayerTable />
-            </Tab.Pane>
-          )
-        },
+
         {
           menuItem: "Activation Functions",
           render: () => (

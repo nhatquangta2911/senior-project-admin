@@ -1,12 +1,12 @@
-import Caller from './ApiCaller';
+import Caller from "./ApiCaller";
 
-const prefix = 'users/';
+const prefix = "users/";
 
 export default {
   login(user) {
-    return Caller(prefix + 'login', 'POST', user);
+    return Caller(prefix + "login", "POST", user);
   },
   getAll() {
-    return Caller(prefix, 'GET');
+    return Caller(prefix, "GET");
   }
 };

@@ -13,11 +13,11 @@ function App() {
       <Navbar />
       <ToastProvider autoDismiss autoDismissTimeout={4000}>
         <Switch>
-          <Route exact path="/" component={HomePage} />
+          <Route exact path="/" component={withAuth(ManagePage)} />
           <Route path="/reload" component={null} key="reload" />
           <Route path="/manage" component={withAuth(ManagePage)} />
           <Route path="/monitor" component={withAuth(MonitorPage)} />
-          <Route path="/log" component={withAuth(LogPage)} />
+          <Route path="/log" component={withAuth(MonitorPage)} />
           <Route path="/auth" component={LoginPage} />
         </Switch>
       </ToastProvider>

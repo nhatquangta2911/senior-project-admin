@@ -30,6 +30,7 @@ class LoginPage extends Component {
         appearance: "success"
       });
       window.sessionStorage.setItem("token", result.data.token);
+      window.sessionStorage.setItem("name", result.data.user.name);
       this.props.history.push("/monitor");
     } catch (error) {
       this.props.toast.addToast(
