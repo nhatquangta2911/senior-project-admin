@@ -15,37 +15,44 @@ class TrainTable extends Component {
     };
   }
 
-  handleSubmit = async () => {
+  handleSubmit = () => {
     this.setState({
       isLoading: true
     });
     const { node1, node2, node3, af1, af2, af3, epoch } = this.state;
-    try {
-      const result = await DjangoApi.train({
-        node1,
-        node2,
-        node3,
-        af1,
-        af2,
-        af3,
-        epochs: epoch
+    DjangoApi.train({
+      node1: node1,
+      node2: node2,
+      node3: node3,
+      af1: af1,
+      af2: af2,
+      af3: af3,
+      epochs: epoch
+    })
+      .then(res => {
+        console.log(res);
+        this.props.toast.addToast(
+          `Update successfully${
+            res.data.duration ? ` in ${res.data.duration} ms` : ""
+          }. It might take at least 3 minutes to update the model.`,
+          { appearance: "success" }
+        );
+        this.setState({
+          isLoading: false
+        });
+        this.props.history.push("/log");
+      })
+      .catch(err => {
+        this.props.toast.addToast(
+          "Something went wrong. Please try again." + err.message,
+          {
+            appearance: "error"
+          }
+        );
+        this.setState({
+          isLoading: false
+        });
       });
-      this.props.toast.addToast(
-        "Update successfully. It might take at least 3 minutes to update the model.",
-        { appearance: "success" }
-      );
-      this.setState({
-        isLoading: false
-      });
-      this.props.history.push("/log");
-    } catch (err) {
-      this.props.toast.addToast("Something went wrong. Please try again.", {
-        appearance: "error"
-      });
-      this.setState({
-        isLoading: false
-      });
-    }
   };
 
   render() {
@@ -86,18 +93,19 @@ class TrainTable extends Component {
                 fluid
                 id="node1"
                 label="Amount of Nodes (Layer 1)"
-                placeholder="Current Value: 400"
-                onChange={(e, { id, value }) =>
+                placeholder="Current Value: 800"
+                onChange={(e, { id, value }) => {
+                  console.log({ e, id, value });
                   this.setState({
                     [id]: parseInt(value)
-                  })
-                }
+                  });
+                }}
               />
               <Form.Input
                 fluid
                 id="node2"
                 label="Amount of Nodes (Layer 2)"
-                placeholder="Current Value: 800"
+                placeholder="Current Value: 400"
                 onChange={(e, { id, value }) =>
                   this.setState({
                     [id]: parseInt(value)
@@ -130,7 +138,7 @@ class TrainTable extends Component {
                 options={optionResult}
                 onChange={(e, { id, value }) =>
                   this.setState({
-                    [id]: parseInt(value)
+                    [id]: value
                   })
                 }
               />
@@ -138,7 +146,7 @@ class TrainTable extends Component {
                 fluid
                 style={{ margin: "0 6px" }}
                 id="af2"
-                label="Activation Function (Layer 1)"
+                label="Activation Function (Layer 2)"
                 search
                 clearable
                 noResultsMessage="No Items"
@@ -147,7 +155,7 @@ class TrainTable extends Component {
                 options={optionResult}
                 onChange={(e, { id, value }) =>
                   this.setState({
-                    [id]: parseInt(value)
+                    [id]: value
                   })
                 }
               />
@@ -155,7 +163,7 @@ class TrainTable extends Component {
                 fluid
                 style={{ margin: "0 6px" }}
                 id="af3"
-                label="Activation Function (Layer 1)"
+                label="Activation Function (Layer 3)"
                 search
                 clearable
                 noResultsMessage="No Items"
@@ -164,7 +172,7 @@ class TrainTable extends Component {
                 options={optionResult}
                 onChange={(e, { id, value }) =>
                   this.setState({
-                    [id]: parseInt(value)
+                    [id]: value
                   })
                 }
               />
