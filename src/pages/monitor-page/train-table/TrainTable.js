@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { TableHeader } from "../../../components";
-import { Form, Dropdown, Button } from "semantic-ui-react";
+import { Form, Dropdown, Button, ModalDescription } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import DjangoApi from "../../../api/DjangoApi";
 import { withHooksHOC } from "../../../helpers/withHooksHOC";
@@ -16,6 +16,10 @@ class TrainTable extends Component {
   }
 
   handleSubmit = () => {
+    this.props.toast.addToast(
+      `Updating Modal. It might take a little while to update the model.`,
+      { appearance: "info", autoDismissTimeout: 5000 }
+    );
     this.setState({
       isLoading: true
     });
@@ -30,13 +34,20 @@ class TrainTable extends Component {
       epochs: epoch
     })
       .then(res => {
-        console.log(res);
         this.props.toast.addToast(
           `Update successfully${
             res.data.duration ? ` in ${res.data.duration} ms` : ""
-          }. It might take at least 3 minutes to update the model.`,
+          }`,
           { appearance: "success" }
         );
+        setTimeout(() => {
+          this.props.toast.addToast(
+            `Accuracy: ${res.data.accuracy.toFixed(
+              4
+            )}, Loss: ${res.data.loss.toFixed(4)}`,
+            { appearance: "info" }
+          );
+        }, 3000);
         this.setState({
           isLoading: false
         });
