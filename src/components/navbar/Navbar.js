@@ -70,9 +70,9 @@ class Navbar extends Component {
           />
           <Menu.Item
             as={Link}
-            to="/log"
-            name="Activity Logs"
-            active={activeItem === "Activity Logs"}
+            to="/history"
+            name="Training History"
+            active={activeItem === "Training History"}
             onClick={this.handleItemClick}
           />
           <Menu.Menu position="right">

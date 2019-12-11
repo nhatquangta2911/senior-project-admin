@@ -4,6 +4,7 @@ import TransactionTable from "./transaction-table";
 import LayerTable from "./layer-table";
 import ActivationTable from "./activation-table";
 import TrainTable from "./train-table/TrainTable";
+import HistoryTable from "./history-table/HistoryTable";
 
 export default class MonitorPage extends Component {
   constructor(props) {
@@ -11,10 +12,10 @@ export default class MonitorPage extends Component {
     this.state = {
       panes: [
         {
-          menuItem: "Dashboard",
+          menuItem: "History",
           render: () => (
             <Tab.Pane>
-              <TrainTable />
+              <HistoryTable />
             </Tab.Pane>
           )
         },
@@ -59,7 +60,7 @@ export default class MonitorPage extends Component {
         menuPosition="left"
         panes={panes}
         grid={{ paneWidth: 13, tabWidth: 3 }}
-        defaultActiveIndex="1"
+        defaultActiveIndex="0"
       />
     );
   }

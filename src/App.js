@@ -17,7 +17,7 @@ function App() {
           <Route path="/reload" component={null} key="reload" />
           <Route path="/manage" component={withAuth(ManagePage)} />
           <Route path="/monitor" component={withAuth(MonitorPage)} />
-          <Route path="/log" component={withAuth(MonitorPage)} />
+          <Route path="/history" component={withAuth(MonitorPage)} />
           <Route path="/auth" component={LoginPage} />
         </Switch>
       </ToastProvider>
