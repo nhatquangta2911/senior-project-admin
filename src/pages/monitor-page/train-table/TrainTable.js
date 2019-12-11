@@ -1,9 +1,18 @@
 import React, { Component } from "react";
 import { TableHeader } from "../../../components";
-import { Form, Dropdown, Button, ModalDescription } from "semantic-ui-react";
+import {
+  Form,
+  Dropdown,
+  Button,
+  Table,
+  Divider,
+  Icon
+} from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import DjangoApi from "../../../api/DjangoApi";
+import ServerlessTransactionApi from "../../../api/ServerlessTransactionApi";
 import { withHooksHOC } from "../../../helpers/withHooksHOC";
+import TimeHelper from "../../../helpers/TimeHelper";
 
 class TrainTable extends Component {
   constructor(props) {
@@ -11,8 +20,20 @@ class TrainTable extends Component {
     this.state = {
       options: ["relu", "sigmoid", "tanh", "linear", "step", "maxout"],
       epochs: [10, 20, 30, 40, 50, 60, 70],
-      isLoading: false
+      isLoading: false,
+      historyData: ""
     };
+  }
+
+  async componentDidMount() {
+    try {
+      const data = await ServerlessTransactionApi.getAll();
+      this.setState({
+        historyData: data.data
+      });
+    } catch (error) {
+      this.props.toast.addToast(error.message, { appearance: "error" });
+    }
   }
 
   handleSubmit = () => {
@@ -67,7 +88,33 @@ class TrainTable extends Component {
   };
 
   render() {
-    const { options, epochs, isLoading } = this.state;
+    const { options, epochs, isLoading, historyData } = this.state;
+    const historyResult =
+      historyData.nodes &&
+      historyData.nodes.map(h => (
+        <Table.Row>
+          <Table.Cell textAlign="center" style={{ color: "orange" }}>
+            {h.node1}
+          </Table.Cell>
+          <Table.Cell textAlign="center">{h.af1}</Table.Cell>
+          <Table.Cell textAlign="center" style={{ color: "orange" }}>
+            {h.node2}
+          </Table.Cell>
+          <Table.Cell textAlign="center">{h.af2}</Table.Cell>
+          <Table.Cell textAlign="center" style={{ color: "orange" }}>
+            {h.node3}
+          </Table.Cell>
+          <Table.Cell textAlign="center">{h.af3}</Table.Cell>
+          <Table.Cell textAlign="center">{h.epochs}</Table.Cell>
+          <Table.Cell textAlign="center">
+            <Icon color="green" name="checkmark" size="small" />
+          </Table.Cell>
+          <Table.Cell textAlign="center" style={{ fontSize: "0.9em" }}>
+            {TimeHelper.transferAgo(Date.parse(h.createdAt))}
+          </Table.Cell>
+          <Table.Cell style={{ fontSize: "0.9em" }}>{h.note}</Table.Cell>
+        </Table.Row>
+      ));
     const optionResult =
       options &&
       options.map(o => ({
@@ -97,7 +144,7 @@ class TrainTable extends Component {
             total="v1"
           />
         </div>
-        <div style={{ margin: "30px 0" }}>
+        <div style={{ margin: "30px 0 50px" }}>
           <Form>
             <Form.Group widths="equal">
               <Form.Input
@@ -217,6 +264,84 @@ class TrainTable extends Component {
             </Form.Group>
           </Form>
         </div>
+        <Divider />
+        <TableHeader
+          content="History"
+          subheader="See how the model has changed"
+          total={`v${historyData.total || 0}`}
+        />
+        <Table celled structured color="teal" striped>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell colSpan="2" textAlign="center">
+                Layer 1
+              </Table.HeaderCell>
+              <Table.HeaderCell colSpan="2" textAlign="center">
+                Layer 2
+              </Table.HeaderCell>
+              <Table.HeaderCell colSpan="2" textAlign="center">
+                Layer 3
+              </Table.HeaderCell>
+              <Table.HeaderCell textAlign="center" rowSpan="3">
+                Epochs
+              </Table.HeaderCell>
+              <Table.HeaderCell textAlign="center" rowSpan="3">
+                Status
+              </Table.HeaderCell>
+              <Table.HeaderCell textAlign="center" rowSpan="3" width="2">
+                Date
+              </Table.HeaderCell>
+              <Table.HeaderCell textAlign="center" rowSpan="3">
+                Note
+              </Table.HeaderCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.HeaderCell
+                style={{ fontSize: "0.8em" }}
+                textAlign="center"
+                width="1"
+              >
+                Nodes
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{ fontSize: "0.8em" }}
+                textAlign="center"
+                width="2"
+              >
+                Activation Function
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{ fontSize: "0.8em" }}
+                textAlign="center"
+                width="1"
+              >
+                Nodes
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{ fontSize: "0.8em" }}
+                textAlign="center"
+                width="2"
+              >
+                Activation Function
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{ fontSize: "0.8em" }}
+                textAlign="center"
+                width="1"
+              >
+                Nodes
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{ fontSize: "0.8em" }}
+                textAlign="center"
+                width="2"
+              >
+                Activation Function
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>{historyResult}</Table.Body>
+        </Table>
       </div>
     );
   }
