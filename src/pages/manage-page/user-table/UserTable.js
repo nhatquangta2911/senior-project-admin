@@ -18,7 +18,8 @@ class UserTable extends Component {
     open: false,
     isloading: false,
     activePage: 1,
-    data: []
+    data: [],
+    id: ''
   };
 
   componentDidMount() {
@@ -39,6 +40,24 @@ class UserTable extends Component {
       });
   }
 
+  refresh = async () => {
+    this.setState({
+      isLoading: true
+    });
+    try {
+      const result = await AuthApi.getAll();
+      this.setState({
+        data: result.data,
+        isLoading: false
+      });
+    } catch (error) {
+      this.setState({
+        isLoading: false
+      });
+      this.props.toast.addToast(error.message, { appearance: 'error' });
+    }
+  };
+
   handleOpen = () => {
     this.setState({ isLoading: true });
   };
@@ -56,15 +75,19 @@ class UserTable extends Component {
     }, 500);
   };
 
-  handleEdit = () => {
-    // this.setState({
-    //   isLoading: true
-    // });
-    // setTimeout(() => {
-    //   this.setState({
-    //     isLoading: false
-    //   });
-    // }, 500);
+  handleActive = async id => {
+    try {
+      await AuthApi.active(id);
+      this.props.toast.addToast('User has been active', {
+        appearance: 'success'
+      });
+      this.refresh();
+    } catch (error) {
+      this.props.toast.addToast(error.message, { appearance: 'error' });
+      this.setState({
+        isLoading: false
+      });
+    }
   };
 
   handleEmergeModal = () => {
@@ -73,41 +96,66 @@ class UserTable extends Component {
     });
   };
 
-  show = () => this.setState({ open: true });
-  close = () => this.setState({ open: false });
+  show = id => {
+    this.setState({ open: true, id });
+  };
+
+  close = () => {
+    this.setState({
+      open: false
+    });
+  };
+
+  handleBan = async () => {
+    try {
+      await AuthApi.ban(this.state.id);
+      this.props.toast.addToast('User has been banned', {
+        appearance: 'success'
+      });
+      this.setState({ open: false });
+      this.refresh();
+    } catch (error) {
+      this.props.toast.addToast(error.message, { appearance: 'error' });
+      this.setState({ open: false });
+    }
+  };
 
   render() {
     const { open, isLoading, activePage, data } = this.state;
     const tableData =
       data &&
       data.map(cell => (
-        <Table.Row key={data.indexOf(cell)}>
-          <Table.Cell textAlign="center">{data.indexOf(cell) + 1}</Table.Cell>
+        <Table.Row key={data.indexOf(cell)} negative={cell.status === 0}>
+          <Table.Cell textAlign='center'>{data.indexOf(cell) + 1}</Table.Cell>
           <Table.Cell>
-            <Image src={cell.picture} size="tiny" circular />
+            <Image src={cell.picture} size='tiny' circular />
           </Table.Cell>
           <Table.Cell>{cell.name}</Table.Cell>
           <Table.Cell>{cell.email}</Table.Cell>
           <Table.Cell>
-            <Button.Group size="tiny">
+            <Button.Group size='tiny'>
               <Button
-                animated="fade"
-                color="green"
-                onClick={() => this.handleEdit()}
+                disabled={cell.status === 1}
+                animated='fade'
+                color='green'
+                onClick={() => this.handleActive(cell.id)}
               >
                 <Button.Content visible>
-                  <Icon name="edit" />
+                  <Icon name='check' />
                 </Button.Content>
-                <Button.Content hidden>Edit</Button.Content>
+                <Button.Content hidden>Active</Button.Content>
               </Button>
-              <Button.Or text="or" />
-              <Button animated="fade" color="red" onClick={() => this.show()}>
+              <Button.Or text='or' />
+              <Button
+                disabled={cell.status === 0}
+                animated='fade'
+                color='red'
+                onClick={() => this.show(cell.id)}
+              >
                 <Button.Content visible>
-                  <Icon name="delete" />
+                  <Icon name='delete' />
                 </Button.Content>
-                <Button.Content hidden>
-                  <Icon name="remove circle" />
-                </Button.Content>
+                <Button.Content hidden>Ban</Button.Content>
               </Button>
             </Button.Group>
           </Table.Cell>
@@ -116,9 +164,11 @@ class UserTable extends Component {
     //TODO: Modal Confirm
     return (
       <div>
-        <Modal size="tiny" open={open} onClose={() => this.close()}>
+        <Modal size='tiny' open={open} onClose={() => this.close()}>
           <Modal.Header>Confirm delete</Modal.Header>
-          <Modal.Content>Are you sure you want to delete?</Modal.Content>
+          <Modal.Content>
+            Are you sure you want to ban this account?
+          </Modal.Content>
           <Modal.Actions>
             <Button
               negative
@@ -129,24 +179,23 @@ class UserTable extends Component {
             </Button>
             <Button
               positive
-              content="Yes"
-              labelPosition="right"
-              icon="checkmark"
+              content='Yes'
+              labelPosition='right'
+              icon='checkmark'
               onClick={() => {
-                this.close();
-                this.props.toast.addToast('Deleted', { appearance: 'success' });
+                this.handleBan();
               }}
             />
           </Modal.Actions>
         </Modal>
         <TableHeader
-          content="Users"
-          subheader="Monitor all the users"
+          content='Users'
+          subheader='Monitor all the users'
           total={this.state.data.length}
         />
         <Table singleLine compact striped>
           <Table.Header>
-            <Table.HeaderCell width={1} textAlign="center">
+            <Table.HeaderCell width={1} textAlign='center'>
               Order
             </Table.HeaderCell>
             <Table.HeaderCell width={1}>Avatar</Table.HeaderCell>
@@ -160,7 +209,7 @@ class UserTable extends Component {
           defaultActivePage={activePage}
           totalPages={10}
           onPageChange={this.handlePageChange}
-          size="tiny"
+          size='tiny'
         />
         <Dimmer
           active={isLoading}
