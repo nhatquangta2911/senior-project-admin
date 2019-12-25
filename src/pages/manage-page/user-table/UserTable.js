@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { TableHeader } from '../../../components';
+import React, { Component } from "react";
+import { TableHeader } from "../../../components";
 import {
   Table,
   Button,
@@ -9,9 +9,9 @@ import {
   Pagination,
   Modal,
   Image
-} from 'semantic-ui-react';
-import { withHooksHOC } from '../../../helpers/withHooksHOC';
-import AuthApi from '../../../api/AuthApi';
+} from "semantic-ui-react";
+import { withHooksHOC } from "../../../helpers/withHooksHOC";
+import AuthApi from "../../../api/AuthApi";
 
 class UserTable extends Component {
   state = {
@@ -19,7 +19,7 @@ class UserTable extends Component {
     isloading: false,
     activePage: 1,
     data: [],
-    id: ''
+    id: ""
   };
 
   componentDidMount() {
@@ -34,8 +34,8 @@ class UserTable extends Component {
         });
       })
       .catch(error => {
-        this.props.toast.addToast('Something went wrong', {
-          appearance: 'error'
+        this.props.toast.addToast("Something went wrong", {
+          appearance: "error"
         });
       });
   }
@@ -54,7 +54,7 @@ class UserTable extends Component {
       this.setState({
         isLoading: false
       });
-      this.props.toast.addToast(error.message, { appearance: 'error' });
+      this.props.toast.addToast(error.message, { appearance: "error" });
     }
   };
 
@@ -78,12 +78,12 @@ class UserTable extends Component {
   handleActive = async id => {
     try {
       await AuthApi.active(id);
-      this.props.toast.addToast('User has been active', {
-        appearance: 'success'
+      this.props.toast.addToast("User has been active", {
+        appearance: "success"
       });
       this.refresh();
     } catch (error) {
-      this.props.toast.addToast(error.message, { appearance: 'error' });
+      this.props.toast.addToast(error.message, { appearance: "error" });
       this.setState({
         isLoading: false
       });
@@ -109,13 +109,13 @@ class UserTable extends Component {
   handleBan = async () => {
     try {
       await AuthApi.ban(this.state.id);
-      this.props.toast.addToast('User has been banned', {
-        appearance: 'success'
+      this.props.toast.addToast("User has been banned", {
+        appearance: "info"
       });
       this.setState({ open: false });
       this.refresh();
     } catch (error) {
-      this.props.toast.addToast(error.message, { appearance: 'error' });
+      this.props.toast.addToast(error.message, { appearance: "error" });
       this.setState({ open: false });
     }
   };
@@ -126,34 +126,34 @@ class UserTable extends Component {
       data &&
       data.map(cell => (
         <Table.Row key={data.indexOf(cell)} negative={cell.status === 0}>
-          <Table.Cell textAlign='center'>{data.indexOf(cell) + 1}</Table.Cell>
+          <Table.Cell textAlign="center">{data.indexOf(cell) + 1}</Table.Cell>
           <Table.Cell>
-            <Image src={cell.picture} size='tiny' circular />
+            <Image src={cell.picture} size="mini" circular />
           </Table.Cell>
           <Table.Cell>{cell.name}</Table.Cell>
           <Table.Cell>{cell.email}</Table.Cell>
           <Table.Cell>
-            <Button.Group size='tiny'>
+            <Button.Group size="tiny">
               <Button
                 disabled={cell.status === 1}
-                animated='fade'
-                color='green'
+                animated="fade"
+                color="green"
                 onClick={() => this.handleActive(cell.id)}
               >
                 <Button.Content visible>
-                  <Icon name='check' />
+                  <Icon name="check" />
                 </Button.Content>
                 <Button.Content hidden>Active</Button.Content>
               </Button>
-              <Button.Or text='or' />
+              <Button.Or text="or" />
               <Button
                 disabled={cell.status === 0}
-                animated='fade'
-                color='red'
+                animated="fade"
+                color="red"
                 onClick={() => this.show(cell.id)}
               >
                 <Button.Content visible>
-                  <Icon name='delete' />
+                  <Icon name="delete" />
                 </Button.Content>
                 <Button.Content hidden>Ban</Button.Content>
               </Button>
@@ -164,7 +164,7 @@ class UserTable extends Component {
     //TODO: Modal Confirm
     return (
       <div>
-        <Modal size='tiny' open={open} onClose={() => this.close()}>
+        <Modal size="tiny" open={open} onClose={() => this.close()}>
           <Modal.Header>Confirm delete</Modal.Header>
           <Modal.Content>
             Are you sure you want to ban this account?
@@ -179,9 +179,9 @@ class UserTable extends Component {
             </Button>
             <Button
               positive
-              content='Yes'
-              labelPosition='right'
-              icon='checkmark'
+              content="Yes"
+              labelPosition="right"
+              icon="checkmark"
               onClick={() => {
                 this.handleBan();
               }}
@@ -189,13 +189,13 @@ class UserTable extends Component {
           </Modal.Actions>
         </Modal>
         <TableHeader
-          content='Users'
-          subheader='Monitor all the users'
+          content="Users"
+          subheader="Monitor all the users"
           total={this.state.data.length}
         />
         <Table singleLine compact striped>
           <Table.Header>
-            <Table.HeaderCell width={1} textAlign='center'>
+            <Table.HeaderCell width={1} textAlign="center">
               Order
             </Table.HeaderCell>
             <Table.HeaderCell width={1}>Avatar</Table.HeaderCell>
@@ -209,7 +209,7 @@ class UserTable extends Component {
           defaultActivePage={activePage}
           totalPages={10}
           onPageChange={this.handlePageChange}
-          size='tiny'
+          size="tiny"
         />
         <Dimmer
           active={isLoading}
